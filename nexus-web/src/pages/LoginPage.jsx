@@ -1,9 +1,14 @@
 import { useState } from 'react'
+import { Navigate } from 'react-router-dom'
 import LoginForm from '../components/Auth/LoginForm'
 import RegisterForm from '../components/Auth/RegisterForm'
+import { useAuthStore } from '../store/authStore'
 
 export default function LoginPage() {
   const [mode, setMode] = useState('login') // 'login' or 'register'
+  const { token } = useAuthStore()
+
+  if (token) return <Navigate to="/" replace />
 
   return (
     <div className="flex-1 flex items-center justify-center bg-gray-50">

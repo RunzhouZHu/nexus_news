@@ -3,7 +3,7 @@ import client from '../client'
 import { useAuthStore } from '../../store/authStore'
 import { API_ENDPOINTS } from '../endpoints'
 
-const createAuthMutation = (endpoint) => {
+function useAuthMutation(endpoint) {
   return useMutation({
     mutationFn: async ({ email, password }) => {
       const res = await client.post(endpoint, { email, password })
@@ -23,9 +23,9 @@ const createAuthMutation = (endpoint) => {
 }
 
 export function useRegister() {
-  return createAuthMutation(API_ENDPOINTS.AUTH_REGISTER)
+  return useAuthMutation(API_ENDPOINTS.AUTH_REGISTER)
 }
 
 export function useLogin() {
-  return createAuthMutation(API_ENDPOINTS.AUTH_LOGIN)
+  return useAuthMutation(API_ENDPOINTS.AUTH_LOGIN)
 }

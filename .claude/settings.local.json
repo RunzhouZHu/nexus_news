@@ -80,7 +80,32 @@
       "Bash(git -C e:/wenjian/123/2026.Spring/pitch commit -m ':*)",
       "Bash(git -C \"e:/wenjian/123/2026.Spring/pitch\" add nexus-web/src/components/Graph/GraphCanvas.jsx nexus-web/tests/store/graphStore.test.js)",
       "Bash(git -C \"e:/wenjian/123/2026.Spring/pitch\" add nexus-web/src/components/Graph/GraphCanvas.jsx nexus-web/tests/integration/graphExploration.test.jsx)",
-      "Bash(git -C \"e:/wenjian/123/2026.Spring/pitch\" add nexus-web/src/api/hooks/useTrendingNodes.js)"
+      "Bash(git -C \"e:/wenjian/123/2026.Spring/pitch\" add nexus-web/src/api/hooks/useTrendingNodes.js)",
+      "Bash(curl -s -X POST http://localhost:3000/api/auth/register -H \"Content-Type: application/json\" -d '{\"email\":\"test@example.com\",\"password\":\"password123\"}')",
+      "Bash(curl -sv http://localhost:3000/api/auth/register)",
+      "Bash(curl -sv -X POST http://localhost:3000/api/auth/register -H \"Content-Type: application/json\" -d '{\"email\":\"test@example.com\",\"password\":\"password123\"}')",
+      "Bash(timeout 5 node src/api/server.js)",
+      "Bash(curl -s --max-time 3 -X POST http://localhost:3000/api/auth/register -H \"Content-Type: application/json\" -d '{\"email\":\"test@example.com\",\"password\":\"password123\"}')",
+      "Bash(node -e \"import\\('pg'\\).then\\(\\({default: pg}\\) => { const p = new pg.Pool\\({connectionString:'postgresql://nexus:nexus@localhost:5432/nexus'}\\); p.query\\('SELECT 1'\\).then\\(r => { console.log\\('DB OK'\\); p.end\\(\\) }\\).catch\\(e => { console.error\\('DB ERROR:', e.message\\); p.end\\(\\) }\\) }\\)\")",
+      "Bash(node src/api/server.js)",
+      "Bash(disown)",
+      "Bash(curl -s --max-time 8 -X POST http://127.0.0.1:3000/api/auth/register -H \"Content-Type: application/json\" -d '{\"email\":\"testuser@example.com\",\"password\":\"pass1234\"}')",
+      "Bash(echo \"CURL_EXIT:$?\")",
+      "Bash(curl -s --max-time 3 http://127.0.0.1:3000/)",
+      "Bash(echo \"exit:$?\")",
+      "Bash(netstat -ano)",
+      "Bash(powershell -Command \"netstat -ano | Select-String ':3000'\")",
+      "Bash(powershell -Command \"Start-Process -FilePath 'node' -ArgumentList 'src/api/server.js' -WorkingDirectory 'e:\\\\wenjian\\\\123\\\\nexus_news\\\\nexus' -WindowStyle Hidden\")",
+      "Bash(curl -s --max-time 10 -X POST http://127.0.0.1:3000/api/auth/register -H \"Content-Type: application/json\" -d '{\"email\":\"testuser@example.com\",\"password\":\"pass1234\"}')",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(curl -s --max-time 2 http://127.0.0.1:3000/)",
+      "Bash(break)",
+      "Bash(powershell -Command \"Start-Process -FilePath 'node' -ArgumentList 'src/api/server.js' -WorkingDirectory \\(Get-Location\\) -RedirectStandardOutput 'C:/tmp/server_out.txt' -RedirectStandardError 'C:/tmp/server_err.txt' -WindowStyle Hidden; Start-Sleep 4; Get-Content 'C:/tmp/server_out.txt','C:/tmp/server_err.txt' -ErrorAction SilentlyContinue; netstat -ano | Select-String ':3000'\")",
+      "Bash(powershell -NoProfile -Command ':*)",
+      "Bash(powershell -NoProfile -Command \"netstat -ano | Select-String '13492'\")",
+      "Bash(curl -sv --max-time 5 http://127.0.0.1:3000/api/auth/register)",
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 13492 -Force -ErrorAction SilentlyContinue\")",
+      "Bash(powershell -NoProfile -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force\")"
     ]
   }
 }
