@@ -1,0 +1,16 @@
+node_modules
+.git
+.gitignore
+.env
+.env.example
+.vscode
+.idea
+*.log
+*.test.js
+tests
+docs
+.git
+.gitignore
+check_*.mjs
+debug_*.mjs
+enqueue_*.mjs
