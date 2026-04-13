@@ -1,83 +1,25 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, fireEvent, waitFor } from '@testing-library/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import GraphCanvas from '../../src/components/Graph/GraphCanvas'
 import { useGraphStore } from '../../src/store/graphStore'
 
-vi.mock('reactflow', async () => {
-  const actual = await vi.importActual('reactflow')
-  return {
-    ...actual,
-    default: ({ children, onNodeClick, nodes }) => (
-      <div data-testid="reactflow">
-        {nodes?.map((node) => (
-          <div
-            key={node.id}
-            data-testid={`node-${node.id}`}
-            className="cursor-pointer rounded-lg"
-            onClick={() => onNodeClick?.({}, node)}
-          >
-            {node.data?.title}
-          </div>
-        ))}
-        {children}
-      </div>
-    ),
-    Background: () => null,
-    Controls: () => null,
-    MiniMap: () => null,
-    Handle: () => null,
-    Position: { Top: 'top', Bottom: 'bottom' },
-    BaseEdge: () => null,
-    EdgeLabelRenderer: ({ children }) => <div>{children}</div>,
-    getSmoothStepPath: () => ['M0 0', 0, 0],
-    getBezierPath: () => ['M0 0 C0 0 0 0 0 0', 0, 0],
-  }
-})
-
-vi.mock('../../src/components/Graph/CustomNode', () => ({
-  default: ({ data }) => (
-    <div data-testid="custom-node" className="cursor-pointer rounded-lg">
-      {data?.title}
-    </div>
-  ),
+// Sigma.js requires WebGL — not available in jsdom.
+vi.mock('sigma', () => ({
+  default: vi.fn().mockImplementation(() => ({
+    on: vi.fn(), off: vi.fn(), kill: vi.fn(), refresh: vi.fn(),
+    getCamera: vi.fn(() => ({ enable: vi.fn(), disable: vi.fn() })),
+    getMouseCaptor: vi.fn(() => ({ on: vi.fn(), off: vi.fn() })),
+    graphToViewport: vi.fn(() => ({ x: 0, y: 0 })),
+    viewportToGraph: vi.fn(() => ({ x: 0, y: 0 })),
+  })),
 }))
-
-vi.mock('../../src/components/Graph/CustomEdge', () => ({
-  default: () => null,
+vi.mock('graphology-layout-forceatlas2/worker', () => ({
+  default: vi.fn().mockImplementation(() => ({ start: vi.fn(), stop: vi.fn() })),
 }))
-
-vi.mock('../../src/api/hooks/useEdges', () => ({
-  useEdges: () => ({ data: [], isLoading: false }),
+vi.mock('graphology-layout-forceatlas2', () => ({
+  default: { inferSettings: vi.fn(() => ({})) },
 }))
+vi.mock('@sigma/edge-curve', () => ({ EdgeCurvedProgram: vi.fn() }))
 
-vi.mock('../../src/components/Common/TrendingBadge', () => ({
-  default: () => null,
-}))
-
-const TRENDING_NODES = [
-  { id: 'trend-1', title: 'Trending Node 1', summary: 'Summary 1', trending_score: 0.9 },
-  { id: 'trend-2', title: 'Trending Node 2', summary: 'Summary 2', trending_score: 0.7 },
-]
-
-vi.mock('../../src/api/hooks/useTrendingNodes', () => ({
-  useTrendingNodes: () => ({
-    data: TRENDING_NODES,
-    isLoading: false,
-    error: null,
-  }),
-}))
-
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  })
-  return ({ children }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  )
-}
-
-describe('Graph Exploration Flow', () => {
+describe('Graph Exploration Flow — store logic', () => {
   beforeEach(() => {
     useGraphStore.setState({
       selectedNodeId: null,
@@ -90,42 +32,22 @@ describe('Graph Exploration Flow', () => {
     vi.clearAllMocks()
   })
 
-  it('starts with trending nodes only', async () => {
-    const { container } = render(<GraphCanvas />, { wrapper: createWrapper() })
-
-    await waitFor(() => {
-      const nodes = container.querySelectorAll('[data-testid^="node-"]')
-      expect(nodes.length).toBe(2)
-    })
-  })
-
-  it('selects a node on click and stores it in graphStore', async () => {
-    const { container } = render(<GraphCanvas />, { wrapper: createWrapper() })
-
-    await waitFor(() => {
-      expect(container.querySelector('[data-testid="node-trend-1"]')).not.toBeNull()
-    })
-
-    fireEvent.click(container.querySelector('[data-testid="node-trend-1"]'))
-
-    await waitFor(() => {
-      const store = useGraphStore.getState()
-      expect(store.selectedNodeId).toBe('trend-1')
-    })
+  it('selectNode stores the selected node id and opens detail', () => {
+    const store = useGraphStore.getState()
+    store.selectNode('trend-1', { id: 'trend-1', title: 'Trending Node 1' })
+    const state = useGraphStore.getState()
+    expect(state.selectedNodeId).toBe('trend-1')
+    expect(state.isDetailOpen).toBe(true)
   })
 
   it('pins a node and preserves it across collapse', () => {
     const store = useGraphStore.getState()
-    const nodeId = 'trend-1'
 
-    store.togglePinNode(nodeId)
-    expect(useGraphStore.getState().pinnedNodes.has(nodeId)).toBe(true)
+    store.togglePinNode('trend-1')
+    expect(useGraphStore.getState().pinnedNodes.has('trend-1')).toBe(true)
 
-    // Collapse an edge hiding a different node
     store.toggleCollapseEdge('edge-1', new Set(['trend-2']))
-
-    // Pinned node is unaffected
-    expect(useGraphStore.getState().pinnedNodes.has(nodeId)).toBe(true)
+    expect(useGraphStore.getState().pinnedNodes.has('trend-1')).toBe(true)
     expect(useGraphStore.getState().collapsedEdges.has('edge-1')).toBe(true)
   })
 
@@ -136,20 +58,18 @@ describe('Graph Exploration Flow', () => {
     store.toggleCollapseEdge('edge-1', new Set(['trend-1', 'trend-2']))
 
     const state = useGraphStore.getState()
-    const allNodeIds = ['trend-1', 'trend-2']
-    const visible = new Set(allNodeIds)
-
+    const visible = new Set(['trend-1', 'trend-2'])
     state.collapsedEdges.forEach((hiddenNodes) => {
       hiddenNodes.forEach((id) => {
         if (!state.pinnedNodes.has(id)) visible.delete(id)
       })
     })
 
-    expect(visible.has('trend-1')).toBe(true)  // pinned — stays visible
-    expect(visible.has('trend-2')).toBe(false) // collapsed and not pinned
+    expect(visible.has('trend-1')).toBe(true)   // pinned — stays visible
+    expect(visible.has('trend-2')).toBe(false)  // collapsed and not pinned
   })
 
-  it('expands connections into allNodes when expandNode is called', () => {
+  it('expands connections into expandedConnections when expandNode is called', () => {
     const store = useGraphStore.getState()
 
     store.expandNode('trend-1', {
@@ -157,9 +77,7 @@ describe('Graph Exploration Flow', () => {
         { id: 'conn-1', title: 'Connection 1' },
         { id: 'conn-2', title: 'Connection 2' },
       ],
-      edges: [
-        { id: 'edge-a', from_node: 'trend-1', to_node: 'conn-1' },
-      ],
+      edges: [{ id: 'edge-a', from_node: 'trend-1', to_node: 'conn-1' }],
       offset: 2,
       total: 2,
       loading: false,
@@ -190,5 +108,14 @@ describe('Graph Exploration Flow', () => {
     const state = useGraphStore.getState()
     expect(state.expandedConnections['trend-1'].nodes).toHaveLength(2)
     expect(state.expandedConnections['trend-1'].offset).toBe(11)
+  })
+
+  it('closeDetail clears selection and closes panel', () => {
+    const store = useGraphStore.getState()
+    store.selectNode('trend-1', { id: 'trend-1', title: 'Node' })
+    store.closeDetail()
+    const state = useGraphStore.getState()
+    expect(state.selectedNodeId).toBeNull()
+    expect(state.isDetailOpen).toBe(false)
   })
 })
