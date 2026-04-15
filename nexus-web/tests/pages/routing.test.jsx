@@ -19,7 +19,7 @@ vi.mock('graphology-layout-forceatlas2/worker', () => ({
 vi.mock('graphology-layout-forceatlas2', () => ({
   default: { inferSettings: vi.fn(() => ({})) },
 }))
-vi.mock('@sigma/edge-curve', () => ({ EdgeCurvedProgram: vi.fn() }))
+vi.mock('@sigma/edge-curve', () => ({ default: vi.fn() }))
 
 vi.mock('../../src/api/hooks/useTrendingNodes', () => ({
   useTrendingNodes: () => ({ data: null, isLoading: true, error: null }),

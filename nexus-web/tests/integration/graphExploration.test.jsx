@@ -17,7 +17,7 @@ vi.mock('graphology-layout-forceatlas2/worker', () => ({
 vi.mock('graphology-layout-forceatlas2', () => ({
   default: { inferSettings: vi.fn(() => ({})) },
 }))
-vi.mock('@sigma/edge-curve', () => ({ EdgeCurvedProgram: vi.fn() }))
+vi.mock('@sigma/edge-curve', () => ({ default: vi.fn() }))
 
 describe('Graph Exploration Flow — store logic', () => {
   beforeEach(() => {

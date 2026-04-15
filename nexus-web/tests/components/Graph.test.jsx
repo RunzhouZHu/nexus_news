@@ -30,7 +30,7 @@ vi.mock('graphology-layout-forceatlas2', () => ({
 }))
 
 vi.mock('@sigma/edge-curve', () => ({
-  EdgeCurvedProgram: vi.fn(),
+  default: vi.fn(),
 }))
 
 vi.mock('../../src/api/hooks/useTrendingNodes', () => ({

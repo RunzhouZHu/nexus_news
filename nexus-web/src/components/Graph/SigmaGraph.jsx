@@ -2,9 +2,8 @@ import { useEffect, useRef, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import Graph from 'graphology'
 import Sigma from 'sigma'
-import FA2Layout from 'graphology-layout-forceatlas2/worker'
 import forceAtlas2 from 'graphology-layout-forceatlas2'
-import { EdgeCurvedProgram } from '@sigma/edge-curve'
+import EdgeCurveProgram from '@sigma/edge-curve'
 import { useGraphStore } from '../../store/graphStore'
 import { computeSemanticPositions, translatePositions } from './layoutUtils'
 import NodeHalo from './NodeHalo'
@@ -79,7 +78,7 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
   const containerRef = useRef(null)
   const sigmaRef = useRef(null)
   const graphRef = useRef(null)
-  const layoutRef = useRef(null)
+  const rafRef = useRef(null)
   const selectedNodeRef = useRef(null)
   const dragStateRef = useRef({ dragging: false, draggedNode: null })
 
@@ -98,7 +97,7 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
     const sigma = new Sigma(graph, containerRef.current, {
       renderEdgeLabels: false,
       defaultEdgeType: 'curved',
-      edgeProgramClasses: { curved: EdgeCurvedProgram },
+      edgeProgramClasses: { curved: EdgeCurveProgram },
       labelColor: { color: '#e2e8f0' },
       labelSize: 11,
       labelThreshold: 6,
@@ -140,12 +139,23 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
     })
     sigmaRef.current = sigma
 
-    // ForceAtlas2 worker
-    const layout = new FA2Layout(graph, {
-      settings: forceAtlas2.inferSettings(graph),
-    })
-    layoutRef.current = layout
-    layout.start()
+    // ForceAtlas2 via rAF loop (avoids Web Worker bundling issues in Vite)
+    const fa2Settings = {
+      gravity: 1,
+      scalingRatio: 2,
+      slowDown: 3,
+      barnesHutOptimize: true,
+    }
+    let animating = true
+    const runLayout = () => {
+      if (!animating) return
+      if (graph.order > 0) {
+        forceAtlas2.assign(graph, { iterations: 1, settings: fa2Settings })
+        sigma.refresh()
+      }
+      rafRef.current = requestAnimationFrame(runLayout)
+    }
+    rafRef.current = requestAnimationFrame(runLayout)
 
     // ── Drag handling ────────────────────────────────────────────────────────
     sigma.on('downNode', ({ node }) => {
@@ -169,7 +179,8 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
     })
 
     return () => {
-      layout.stop()
+      animating = false
+      cancelAnimationFrame(rafRef.current)
       sigma.kill()
     }
   }, []) // run only once on mount

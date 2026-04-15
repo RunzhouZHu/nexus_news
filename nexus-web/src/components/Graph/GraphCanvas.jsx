@@ -4,6 +4,7 @@ import { useEdges } from '../../api/hooks/useEdges'
 import { useFilterStore } from '../../store/filterStore'
 import { useGraphStore } from '../../store/graphStore'
 import SigmaGraph from './SigmaGraph'
+import DetailSheet from '../NodeDetail/DetailSheet'
 import LoadingSpinner from '../Common/LoadingSpinner'
 import client from '../../api/client'
 
@@ -143,6 +144,7 @@ export default function GraphCanvas() {
         onStageClick={handleStageClick}
         onLoadMore={handleLoadMore}
       />
+      <DetailSheet onLoadMore={handleLoadMore} />
     </div>
   )
 }

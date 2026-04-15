@@ -105,7 +105,13 @@
       "Bash(powershell -NoProfile -Command \"netstat -ano | Select-String '13492'\")",
       "Bash(curl -sv --max-time 5 http://127.0.0.1:3000/api/auth/register)",
       "Bash(powershell -NoProfile -Command \"Stop-Process -Id 13492 -Force -ErrorAction SilentlyContinue\")",
-      "Bash(powershell -NoProfile -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force\")"
+      "Bash(powershell -NoProfile -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(npm list:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('sigma:', p.dependencies.sigma, 'reactflow:', p.dependencies.reactflow || 'REMOVED'\\)\")",
+      "Bash(npx vitest:*)",
+      "Bash(xargs grep:*)",
+      "Bash(xargs cat:*)"
     ]
   }
 }
