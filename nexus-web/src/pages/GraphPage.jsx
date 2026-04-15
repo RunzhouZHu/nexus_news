@@ -1,6 +1,5 @@
 import GraphCanvas from '../components/Graph/GraphCanvas'
 import Sidebar from '../components/Sidebar/Sidebar'
-import DetailSheet from '../components/NodeDetail/DetailSheet'
 import MobileMenu from '../components/Common/MobileMenu'
 import { useFilterStore } from '../store/filterStore'
 
@@ -27,7 +26,6 @@ export default function GraphPage() {
         </div>
       </div>
 
-      <DetailSheet />
     </>
   )
 }
