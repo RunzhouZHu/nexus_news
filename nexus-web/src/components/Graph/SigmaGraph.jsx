@@ -263,16 +263,33 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%', background: BG_COLOR }}>
       <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
-      <NodeHalo
-        nodeId={selectedNodeId}
-        sigma={sigmaRef.current}
-        graph={graphRef.current}
-        isPinned={pinnedNodes.has(selectedNodeId)}
-        hasMore={hasMore}
-        isLoading={isLoading}
-        onPin={handlePin}
-        onLoadMore={handleLoadMore}
-      />
+      {selectedNodeId && (
+        <NodeHalo
+          nodeId={selectedNodeId}
+          sigma={sigmaRef.current}
+          graph={graphRef.current}
+          isPinned={pinnedNodes.has(selectedNodeId)}
+          hasMore={hasMore}
+          isLoading={isLoading}
+          onPin={handlePin}
+          onLoadMore={handleLoadMore}
+          isSelected={true}
+        />
+      )}
+      {Array.from(pinnedNodes).filter(pinId => pinId !== selectedNodeId).map(pinId => (
+        <NodeHalo
+          key={pinId}
+          nodeId={pinId}
+          sigma={sigmaRef.current}
+          graph={graphRef.current}
+          isPinned={true}
+          hasMore={false}
+          isLoading={false}
+          onPin={() => togglePinNode(pinId)}
+          onLoadMore={() => {}}
+          isSelected={false}
+        />
+      ))}
     </div>
   )
 }
