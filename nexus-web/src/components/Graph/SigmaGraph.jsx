@@ -1,9 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import Graph from 'graphology'
-import Sigma from 'sigma'
 import forceAtlas2 from 'graphology-layout-forceatlas2'
-import EdgeCurveProgram from '@sigma/edge-curve'
+import Sigma from 'sigma'
 import { useGraphStore } from '../../store/graphStore'
 import NodeHalo from './NodeHalo'
 
@@ -64,10 +63,13 @@ function syncEdges(graph, apiEdges) {
   apiEdges.forEach((edge) => {
     if (existingEdges.has(edge.id)) return
     if (!graph.hasNode(edge.from_node) || !graph.hasNode(edge.to_node)) return
+    const edgeType = edge.type || 'CONTEXT'
+    const isArrow = edgeType === 'CAUSED_BY' || edgeType === 'LED_TO'
     graph.addDirectedEdgeWithKey(edge.id, edge.from_node, edge.to_node, {
-      type: 'curved',
-      color: EDGE_COLOR_MAP[edge.type] ?? '#94a3b855',
-      edgeType: edge.type || 'CONTEXT',
+      type: isArrow ? 'arrow' : 'line',
+      size: isArrow ? 4 : 3,  // Thicker lines for arrows, thinner for regular lines
+      color: EDGE_COLOR_MAP[edgeType] ?? '#94a3b855',
+      edgeType,
     })
   })
 }
@@ -95,8 +97,7 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
 
     const sigma = new Sigma(graph, containerRef.current, {
       renderEdgeLabels: false,
-      defaultEdgeType: 'curved',
-      edgeProgramClasses: { curved: EdgeCurveProgram },
+      defaultEdgeType: 'line',
       labelColor: { color: '#e2e8f0' },
       labelSize: 11,
       labelThreshold: 6,
@@ -128,6 +129,7 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
             if (!graph.hasExtremity(edge, sel)) {
               const baseColor = (data.color || '#94a3b8').slice(0, 7)
               res.color = baseColor + '22'
+              res.size = (data.size || 2) * 0.3  // Make dimmed edges thinner
             }
           } catch {
             // ignore
