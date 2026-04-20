@@ -5,7 +5,6 @@ import Sigma from 'sigma'
 import forceAtlas2 from 'graphology-layout-forceatlas2'
 import EdgeCurveProgram from '@sigma/edge-curve'
 import { useGraphStore } from '../../store/graphStore'
-import { computeSemanticPositions, translatePositions } from './layoutUtils'
 import NodeHalo from './NodeHalo'
 
 // ── Visual constants ──────────────────────────────────────────────────────────
@@ -193,24 +192,13 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
     sigmaRef.current.refresh()
   }, [nodes, edges, pinnedNodes])
 
-  // ── Handle node click: semantic layout + notify parent ───────────────────
+  // ── Handle node click: notify parent ───────────────────
   const handleNodeClick = useCallback(({ node }) => {
     const graph = graphRef.current
     const sigma = sigmaRef.current
     if (!graph || !sigma) return
 
     selectedNodeRef.current = node
-
-    const { x: cx, y: cy } = graph.getNodeAttributes(node)
-    const rawPositions = computeSemanticPositions(node, graph)
-    const positions = translatePositions(rawPositions, cx, cy)
-
-    Object.entries(positions).forEach(([id, pos]) => {
-      if (!graph.hasNode(id)) return
-      graph.setNodeAttribute(id, 'x', pos.x)
-      graph.setNodeAttribute(id, 'y', pos.y)
-      graph.setNodeAttribute(id, 'fixed', true)
-    })
 
     sigma.refresh()
     onNodeClick(node)
