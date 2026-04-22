@@ -26,6 +26,50 @@ const EDGE_COLOR_MAP = {
   CONTEXT: '#94a3b855',
 }
 
+function drawWrappedLabel(context, data, settings) {
+  if (!data.label) return
+
+  const size = settings.labelSize
+  const font = settings.labelFont || 'sans-serif'
+  const weight = settings.labelWeight || 'normal'
+  const color = settings.labelColor?.color || '#e2e8f0'
+
+  context.font = `${weight} ${size}px ${font}`
+  context.fillStyle = color
+
+  const MAX_WIDTH = 140
+  const LINE_HEIGHT = size * 1.4
+  const x = data.x + data.size + 3
+
+  const words = data.label.split(' ')
+  const lines = []
+  let currentLine = ''
+
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word
+    if (currentLine && context.measureText(testLine).width > MAX_WIDTH) {
+      lines.push(currentLine)
+      currentLine = word
+    } else {
+      currentLine = testLine
+    }
+  }
+  if (currentLine) lines.push(currentLine)
+
+  const displayLines = lines.slice(0, 4)
+  if (lines.length > 4) {
+    displayLines[3] = displayLines[3].replace(/\s+\S+$/, '') + '…'
+  }
+
+  const totalHeight = (displayLines.length - 1) * LINE_HEIGHT
+  const startY = data.y + size / 3 - totalHeight / 2
+
+  const INDENT = 3
+  displayLines.forEach((line, i) => {
+    context.fillText(line, x + (i === 0 ? INDENT : 0), startY + i * LINE_HEIGHT)
+  })
+}
+
 function getNodeColor(tags) {
   if (!tags?.length) return '#94a3b8'
   return TAG_COLOR_MAP[tags[0]?.toLowerCase()] ?? '#94a3b8'
@@ -102,6 +146,7 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
       labelSize: 11,
       labelThreshold: 6,
       backgroundColor: BG_COLOR,
+      defaultDrawNodeLabel: drawWrappedLabel,
       nodeReducer: (node, data) => {
         const res = { ...data }
         const sel = selectedNodeRef.current
