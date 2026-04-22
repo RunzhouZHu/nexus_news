@@ -1,0 +1,82 @@
+<h2>Where should the news image appear in the detail sheet?</h2>
+<p class="subtitle">Pick the layout that feels best for the article image</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="margin:0">
+        <div class="mockup-header">Article Detail Sheet</div>
+        <div class="mockup-body" style="padding:0">
+          <div style="background:#334155;height:120px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:12px;">
+            📷 Article Image (full width hero)
+          </div>
+          <div style="padding:12px">
+            <div style="font-weight:600;margin-bottom:4px;font-size:13px;">Event Title Here</div>
+            <div style="color:#94a3b8;font-size:11px;margin-bottom:8px;">Summary text about the event…</div>
+            <div style="display:flex;gap:4px">
+              <span style="background:#1e3a5f;color:#60a5fa;padding:2px 6px;border-radius:4px;font-size:10px;">tag1</span>
+              <span style="background:#1e3a5f;color:#60a5fa;padding:2px 6px;border-radius:4px;font-size:10px;">tag2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Hero Banner (top)</h3>
+      <p>Full-width image at the top of the sheet, before the title. Maximum visual impact.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="margin:0">
+        <div class="mockup-header">Article Detail Sheet</div>
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-weight:600;margin-bottom:4px;font-size:13px;">Event Title Here</div>
+          <div style="display:flex;gap:10px;margin-bottom:8px;">
+            <div style="background:#334155;width:80px;min-width:80px;height:60px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:9px;text-align:center;">
+              📷 Thumbnail
+            </div>
+            <div style="color:#94a3b8;font-size:11px;">Summary text about the event goes here and wraps around the image thumbnail…</div>
+          </div>
+          <div style="display:flex;gap:4px">
+            <span style="background:#1e3a5f;color:#60a5fa;padding:2px 6px;border-radius:4px;font-size:10px;">tag1</span>
+            <span style="background:#1e3a5f;color:#60a5fa;padding:2px 6px;border-radius:4px;font-size:10px;">tag2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Inline Thumbnail</h3>
+      <p>Small thumbnail next to the summary text. Compact, keeps focus on content.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="margin:0">
+        <div class="mockup-header">Article Detail Sheet — Sources Tab</div>
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-weight:600;margin-bottom:4px;font-size:13px;">Event Title Here</div>
+          <div style="color:#94a3b8;font-size:11px;margin-bottom:10px;">Summary text about the event…</div>
+          <div style="border:1px solid #334155;border-radius:6px;padding:8px;display:flex;gap:8px;">
+            <div style="background:#334155;width:64px;min-width:64px;height:48px;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:9px;">
+              📷
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:600;">Reuters</div>
+              <div style="font-size:10px;color:#60a5fa;">Read article →</div>
+              <div style="font-size:10px;color:#94a3b8;">Apr 22, 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Per-source in Sources Tab</h3>
+      <p>Image appears inside each source card in the Sources tab. Maps image to its article origin.</p>
+    </div>
+  </div>
+
+</div>

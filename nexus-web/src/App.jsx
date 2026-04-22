@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useAuth } from '@clerk/clerk-react'
@@ -23,11 +22,8 @@ const queryClient = new QueryClient({
 // Wires Clerk token into the axios client and syncs the user with our DB
 function ClerkBridge() {
   const { getToken } = useAuth()
+  setClerkGetToken(getToken)
   useClerkSync()
-
-  useEffect(() => {
-    setClerkGetToken(getToken)
-  }, [getToken])
 
   return null
 }
