@@ -8,7 +8,7 @@ import { userRouter } from './routes/user.js'
 
 export const app = express()
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: process.env.CORS_ORIGIN || 'https://nexusnews-production-1fb4.up.railway.app',
   credentials: true,
 }))
 app.use(express.json())
