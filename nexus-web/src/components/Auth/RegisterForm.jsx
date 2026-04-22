@@ -8,7 +8,7 @@ export default function RegisterForm() {
       appearance={{
         elements: {
           rootBox: 'w-full',
-          card: 'shadow-none p-0',
+          card: 'shadow-none p-10',
         },
       }}
     />
