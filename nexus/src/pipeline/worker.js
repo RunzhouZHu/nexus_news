@@ -64,7 +64,7 @@ const worker = new Worker('articles', async (job) => {
   await runNotify(node)
 
   console.log(`[pipeline] Done: "${node.title}" — ${edges.length} connections`)
-}, { connection, concurrency: 3 })
+}, { connection, concurrency: 3, lockDuration: 120000, lockRenewTime: 60000 })
 
 worker.on('failed', (job, err) => {
   console.error(`[pipeline] Job failed: ${job?.data?.url}`, err.message)

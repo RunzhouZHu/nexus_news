@@ -7,7 +7,3 @@ dist/
 build/
 .DS_Store
 *.log
-新建 文本文档.txt
-.claude/
-.superpowers/
-docs/

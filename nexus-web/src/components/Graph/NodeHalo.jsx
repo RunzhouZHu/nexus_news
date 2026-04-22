@@ -76,6 +76,7 @@ export default function NodeHalo({
   isLoading,
   onPin,
   onLoadMore,
+  isSelected = true,
 }) {
   const [pos, setPos] = useState(null)
 
@@ -123,7 +124,7 @@ export default function NodeHalo({
         title={isPinned ? 'Unpin' : 'Pin'}
         onClick={onPin}
       />
-      {hasMore && (
+      {isSelected && hasMore && (
         <HaloButton
           x={pos.x + Math.cos(MORE_ANGLE) * r}
           y={pos.y + Math.sin(MORE_ANGLE) * r}
@@ -146,4 +147,5 @@ NodeHalo.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   onPin: PropTypes.func.isRequired,
   onLoadMore: PropTypes.func.isRequired,
+  isSelected: PropTypes.bool,
 }

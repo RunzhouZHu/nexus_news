@@ -1,11 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import Graph from 'graphology'
-import Sigma from 'sigma'
 import forceAtlas2 from 'graphology-layout-forceatlas2'
-import EdgeCurveProgram from '@sigma/edge-curve'
+import Sigma from 'sigma'
 import { useGraphStore } from '../../store/graphStore'
-import { computeSemanticPositions, translatePositions } from './layoutUtils'
 import NodeHalo from './NodeHalo'
 
 // ── Visual constants ──────────────────────────────────────────────────────────
@@ -65,10 +63,13 @@ function syncEdges(graph, apiEdges) {
   apiEdges.forEach((edge) => {
     if (existingEdges.has(edge.id)) return
     if (!graph.hasNode(edge.from_node) || !graph.hasNode(edge.to_node)) return
+    const edgeType = edge.type || 'CONTEXT'
+    const isArrow = edgeType === 'CAUSED_BY' || edgeType === 'LED_TO'
     graph.addDirectedEdgeWithKey(edge.id, edge.from_node, edge.to_node, {
-      type: 'curved',
-      color: EDGE_COLOR_MAP[edge.type] ?? '#94a3b855',
-      edgeType: edge.type || 'CONTEXT',
+      type: isArrow ? 'arrow' : 'line',
+      size: isArrow ? 4 : 3,  // Thicker lines for arrows, thinner for regular lines
+      color: EDGE_COLOR_MAP[edgeType] ?? '#94a3b855',
+      edgeType,
     })
   })
 }
@@ -96,8 +97,7 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
 
     const sigma = new Sigma(graph, containerRef.current, {
       renderEdgeLabels: false,
-      defaultEdgeType: 'curved',
-      edgeProgramClasses: { curved: EdgeCurveProgram },
+      defaultEdgeType: 'line',
       labelColor: { color: '#e2e8f0' },
       labelSize: 11,
       labelThreshold: 6,
@@ -129,6 +129,7 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
             if (!graph.hasExtremity(edge, sel)) {
               const baseColor = (data.color || '#94a3b8').slice(0, 7)
               res.color = baseColor + '22'
+              res.size = (data.size || 2) * 0.3  // Make dimmed edges thinner
             }
           } catch {
             // ignore
@@ -193,24 +194,13 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
     sigmaRef.current.refresh()
   }, [nodes, edges, pinnedNodes])
 
-  // ── Handle node click: semantic layout + notify parent ───────────────────
+  // ── Handle node click: notify parent ───────────────────
   const handleNodeClick = useCallback(({ node }) => {
     const graph = graphRef.current
     const sigma = sigmaRef.current
     if (!graph || !sigma) return
 
     selectedNodeRef.current = node
-
-    const { x: cx, y: cy } = graph.getNodeAttributes(node)
-    const rawPositions = computeSemanticPositions(node, graph)
-    const positions = translatePositions(rawPositions, cx, cy)
-
-    Object.entries(positions).forEach(([id, pos]) => {
-      if (!graph.hasNode(id)) return
-      graph.setNodeAttribute(id, 'x', pos.x)
-      graph.setNodeAttribute(id, 'y', pos.y)
-      graph.setNodeAttribute(id, 'fixed', true)
-    })
 
     sigma.refresh()
     onNodeClick(node)
@@ -275,16 +265,33 @@ export default function SigmaGraph({ nodes, edges, onNodeClick, onStageClick, on
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%', background: BG_COLOR }}>
       <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
-      <NodeHalo
-        nodeId={selectedNodeId}
-        sigma={sigmaRef.current}
-        graph={graphRef.current}
-        isPinned={pinnedNodes.has(selectedNodeId)}
-        hasMore={hasMore}
-        isLoading={isLoading}
-        onPin={handlePin}
-        onLoadMore={handleLoadMore}
-      />
+      {selectedNodeId && (
+        <NodeHalo
+          nodeId={selectedNodeId}
+          sigma={sigmaRef.current}
+          graph={graphRef.current}
+          isPinned={pinnedNodes.has(selectedNodeId)}
+          hasMore={hasMore}
+          isLoading={isLoading}
+          onPin={handlePin}
+          onLoadMore={handleLoadMore}
+          isSelected={true}
+        />
+      )}
+      {Array.from(pinnedNodes).filter(pinId => pinId !== selectedNodeId).map(pinId => (
+        <NodeHalo
+          key={pinId}
+          nodeId={pinId}
+          sigma={sigmaRef.current}
+          graph={graphRef.current}
+          isPinned={true}
+          hasMore={false}
+          isLoading={false}
+          onPin={() => togglePinNode(pinId)}
+          onLoadMore={() => {}}
+          isSelected={false}
+        />
+      ))}
     </div>
   )
 }
