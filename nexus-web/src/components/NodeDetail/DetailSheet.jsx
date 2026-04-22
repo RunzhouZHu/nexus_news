@@ -4,10 +4,13 @@ import SourcesTab from './SourcesTab'
 import ConnectionsTab from './ConnectionsTab'
 import TimelineTab from './TimelineTab'
 import ActionsTab from './ActionsTab'
+// import { useNewsImage } from '../../api/hooks/useNewsImage'
 
 export default function DetailSheet({ onLoadMore }) {
   const { isDetailOpen, closeDetail, selectedNode, selectedNodeId, pinnedNodes, togglePinNode, expandedConnections } =
     useGraphStore()
+
+  // const { data: imageUrl, isLoading: imageLoading } = useNewsImage(selectedNode?.title)
 
   if (!selectedNode || !isDetailOpen) return null
 
@@ -76,6 +79,28 @@ export default function DetailSheet({ onLoadMore }) {
           </button>
         </div>
       </div>
+
+      {/* News Image from NewsAPI — disabled due to API rate limits */}
+      {/* {(imageLoading || imageUrl) && (
+        <div className="flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          {imageLoading ? (
+            <div
+              className="w-full flex items-center justify-center text-slate-500 text-xs"
+              style={{ height: 140 }}
+            >
+              Loading image…
+            </div>
+          ) : (
+            <img
+              src={imageUrl}
+              alt={selectedNode.title}
+              className="w-full object-cover"
+              style={{ maxHeight: 180 }}
+              onError={(e) => { e.currentTarget.style.display = 'none' }}
+            />
+          )}
+        </div>
+      )} */}
 
       {/* Summary + tags */}
       <div className="px-4 py-3 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>

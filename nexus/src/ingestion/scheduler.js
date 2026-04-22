@@ -2,7 +2,7 @@
 import 'dotenv/config'
 import { pollTopHeadlines } from './newsapi.js'
 
-const INTERVAL_MS = 5 * 60 * 1000
+const INTERVAL_MS = 12 * 60 * 60 * 1000
 
 async function tick() {
   try {
@@ -12,6 +12,6 @@ async function tick() {
   }
 }
 
-console.log('[scheduler] Starting ingestion scheduler (5-min interval)')
+console.log('[scheduler] Starting ingestion scheduler (12-hour interval)')
 tick()
 setInterval(tick, INTERVAL_MS)
