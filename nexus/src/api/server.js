@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'production' || process.env.ENABLE_WORKER === 'true
 }
 
 const PORT = process.env.PORT ?? 3000
-app.listen(PORT, () => console.log(`Nexus API running on :${PORT}`))
+app.listen(PORT, '0.0.0.0', () => console.log(`Nexus API running on :${PORT}`))
 
 setInterval(async () => {
   try {
