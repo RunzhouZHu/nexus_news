@@ -1,0 +1,34 @@
+<h2>Grid Background Style</h2>
+<p class="subtitle">Which grid style fits the dark node canvas best?</p>
+
+<div class="cards">
+  <div class="card" data-choice="dots" onclick="toggleSelect(this)">
+    <div class="card-image" style="height:160px;border-radius:8px;overflow:hidden;">
+      <div style="width:100%;height:100%;background-color:#0f172a;background-image:radial-gradient(circle, #334155 1px, transparent 1px);background-size:24px 24px;"></div>
+    </div>
+    <div class="card-body">
+      <h3>A — Dot Grid</h3>
+      <p>Subtle 1px dots on a 24px grid. Minimal, modern. Doesn't compete with nodes.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="lines" onclick="toggleSelect(this)">
+    <div class="card-image" style="height:160px;border-radius:8px;overflow:hidden;">
+      <div style="width:100%;height:100%;background-color:#0f172a;background-image:linear-gradient(rgba(51,65,85,0.4) 1px, transparent 1px),linear-gradient(90deg, rgba(51,65,85,0.4) 1px, transparent 1px);background-size:32px 32px;"></div>
+    </div>
+    <div class="card-body">
+      <h3>B — Line Grid</h3>
+      <p>Classic graph-paper lines, 32px spacing. Clear structure, stronger visual presence.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="cross" onclick="toggleSelect(this)">
+    <div class="card-image" style="height:160px;border-radius:8px;overflow:hidden;">
+      <div style="width:100%;height:100%;background-color:#0f172a;background-image:linear-gradient(rgba(51,65,85,0.25) 1px, transparent 1px),linear-gradient(90deg, rgba(51,65,85,0.25) 1px, transparent 1px),linear-gradient(rgba(51,65,85,0.08) 1px, transparent 1px),linear-gradient(90deg, rgba(51,65,85,0.08) 1px, transparent 1px);background-size:128px 128px, 128px 128px, 32px 32px, 32px 32px;"></div>
+    </div>
+    <div class="card-body">
+      <h3>C — Hierarchical Grid</h3>
+      <p>Fine subgrid + bold major grid (every 4 cells). Blueprint / engineering feel.</p>
+    </div>
+  </div>
+</div>
