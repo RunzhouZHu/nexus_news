@@ -1,31 +1,32 @@
+import { useEffect } from 'react'
+import { useUser, useAuth } from '@clerk/clerk-react'
 import { useMutation } from '@tanstack/react-query'
 import client from '../client'
 import { useAuthStore } from '../../store/authStore'
 import { API_ENDPOINTS } from '../endpoints'
 
-function useAuthMutation(endpoint) {
-  return useMutation({
-    mutationFn: async ({ email, password }) => {
-      const res = await client.post(endpoint, { email, password })
+// Syncs the Clerk user into our DB and stores the DB user info.
+export function useClerkSync() {
+  const { isSignedIn, getToken } = useAuth()
+  const { user: clerkUser } = useUser()
+  const { setUser, clearUser } = useAuthStore()
+
+  const sync = useMutation({
+    mutationFn: async ({ email }) => {
+      const res = await client.post(API_ENDPOINTS.AUTH_SYNC, { email })
       return res.data
     },
-    onSuccess: (data) => {
-      useAuthStore.setState({
-        token: data.token,
-        userId: data.user.id,
-        email: data.user.email,
-      })
-    },
-    onError: (error) => {
-      console.error('Auth error:', error.response?.data?.error || error.message)
-    },
+    onSuccess: (data) => setUser(data.user),
   })
-}
 
-export function useRegister() {
-  return useAuthMutation(API_ENDPOINTS.AUTH_REGISTER)
-}
+  useEffect(() => {
+    if (isSignedIn && clerkUser) {
+      const email = clerkUser.primaryEmailAddress?.emailAddress
+      if (email) sync.mutate({ email })
+    } else if (!isSignedIn) {
+      clearUser()
+    }
+  }, [isSignedIn, clerkUser?.id])
 
-export function useLogin() {
-  return useAuthMutation(API_ENDPOINTS.AUTH_LOGIN)
+  return { getToken }
 }

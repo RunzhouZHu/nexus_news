@@ -12,7 +12,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-flow': ['reactflow'],
           'react-query': ['@tanstack/react-query'],
         },
       },

@@ -23,6 +23,25 @@ export async function getUserById(id) {
   return rows[0] ?? null
 }
 
+export async function getUserByClerkId(clerkId) {
+  const { rows } = await pool.query(
+    'SELECT id, email, avatar_url, clerk_id, created_at FROM users WHERE clerk_id=$1',
+    [clerkId]
+  )
+  return rows[0] ?? null
+}
+
+export async function upsertClerkUser({ clerkId, email }) {
+  const { rows } = await pool.query(
+    `INSERT INTO users (email, clerk_id)
+     VALUES ($1, $2)
+     ON CONFLICT (email) DO UPDATE SET clerk_id = EXCLUDED.clerk_id
+     RETURNING id, email, avatar_url, clerk_id, created_at`,
+    [email, clerkId]
+  )
+  return rows[0]
+}
+
 export async function saveNode(userId, nodeId) {
   await pool.query(
     'INSERT INTO saved_nodes (user_id, node_id) VALUES ($1,$2) ON CONFLICT DO NOTHING',

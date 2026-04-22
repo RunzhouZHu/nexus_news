@@ -1,16 +1,16 @@
+import { useAuth } from '@clerk/clerk-react'
 import { useSaveNode, useFollowTopic } from '../../api/hooks/useUser'
 import { useGraphStore } from '../../store/graphStore'
 import { useNode } from '../../api/hooks/useNode'
-import { useAuthStore } from '../../store/authStore'
 
 export default function ActionsTab() {
   const selectedNodeId = useGraphStore((state) => state.selectedNodeId)
   const { data } = useNode(selectedNodeId)
-  const { token } = useAuthStore()
+  const { isSignedIn } = useAuth()
   const saveNode = useSaveNode()
   const followTopic = useFollowTopic()
 
-  if (!token) {
+  if (!isSignedIn) {
     return <p className="text-gray-600">Login to save and follow</p>
   }
 

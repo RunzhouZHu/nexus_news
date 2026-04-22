@@ -1,20 +1,23 @@
-import { useAuthStore } from '../../store/authStore'
+import { useAuth, useUser } from '@clerk/clerk-react'
 import { useNavigate } from 'react-router-dom'
 
 export default function Header() {
-  const { email, logout } = useAuthStore()
+  const { isSignedIn, signOut } = useAuth()
+  const { user } = useUser()
   const navigate = useNavigate()
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await signOut()
     navigate('/login')
   }
+
+  const email = user?.primaryEmailAddress?.emailAddress
 
   return (
     <header className="bg-white shadow">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-blue-600">Nexus</h1>
-        {email && (
+        {isSignedIn && (
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600">{email}</span>
             <button

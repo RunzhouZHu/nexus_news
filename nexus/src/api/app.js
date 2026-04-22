@@ -7,8 +7,15 @@ import { searchRouter } from './routes/search.js'
 import { userRouter } from './routes/user.js'
 
 export const app = express()
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',').map(o => o.trim())
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.some(o => origin === o || origin.endsWith('.vercel.app'))) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
 }))
 app.use(express.json())

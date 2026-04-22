@@ -1,19 +1,18 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+// Stores our DB user info after the Clerk sync call.
+// The actual auth token comes from Clerk via getToken().
 export const useAuthStore = create(
   persist(
     (set) => ({
-      token: null,
       userId: null,
       email: null,
+      avatarUrl: null,
 
-      setAuth: (token, userId, email) => set({ token, userId, email }),
-      logout: () => set({ token: null, userId: null, email: null }),
-      isAuthenticated: () => !!useAuthStore.getState().token,
+      setUser: (user) => set({ userId: user.id, email: user.email, avatarUrl: user.avatar_url ?? null }),
+      clearUser: () => set({ userId: null, email: null, avatarUrl: null }),
     }),
-    {
-      name: 'nexus-auth',
-    }
+    { name: 'nexus-auth' }
   )
 )

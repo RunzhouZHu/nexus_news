@@ -1,30 +1,14 @@
 import { Router } from 'express'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import { createUser, getUserByEmail } from '../../db/users.js'
+import { requireClerkAuth } from '../middleware/auth.js'
+import { upsertClerkUser } from '../../db/users.js'
 
 export const authRouter = Router()
 
-authRouter.post('/register', async (req, res) => {
-  const { email, password } = req.body
-  if (!email || !password) return res.status(400).json({ error: 'email and password required' })
-  try {
-    const user = await createUser({ email, password })
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '30d' })
-    res.status(201).json({ token, user: { id: user.id, email: user.email, avatar_url: user.avatar_url } })
-  } catch (err) {
-    if (err.code === '23505') return res.status(409).json({ error: 'Email already registered' })
-    throw err
-  }
-})
+// Called by the frontend after Clerk sign-in/sign-up to ensure the user exists in our DB
+authRouter.post('/sync', requireClerkAuth, async (req, res) => {
+  const { email } = req.body
+  if (!email) return res.status(400).json({ error: 'email required' })
 
-authRouter.post('/login', async (req, res) => {
-  const { email, password } = req.body
-  if (!email || !password) return res.status(400).json({ error: 'email and password required' })
-  const user = await getUserByEmail(email)
-  if (!user) return res.status(401).json({ error: 'Invalid credentials' })
-  const valid = await bcrypt.compare(password, user.password_hash)
-  if (!valid) return res.status(401).json({ error: 'Invalid credentials' })
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '30d' })
-  res.status(200).json({ token, user: { id: user.id, email: user.email, avatar_url: user.avatar_url } })
+  const user = await upsertClerkUser({ clerkId: req.clerkId, email })
+  res.json({ user: { id: user.id, email: user.email, avatar_url: user.avatar_url } })
 })
