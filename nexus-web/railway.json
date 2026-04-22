@@ -1,0 +1,6 @@
+{
+  "builder": "dockerfile",
+  "deploy": {
+    "startCommand": "node src/db/migrate.js && node src/api/server.js"
+  }
+}
