@@ -114,7 +114,8 @@
       "Bash(xargs cat:*)",
       "Bash(where claude *)",
       "Bash(npm root *)",
-      "Bash(node -e \"import\\('@clerk/express'\\).then\\(m => console.log\\(Object.keys\\(m\\)\\)\\).catch\\(e => console.error\\(e.message\\)\\)\")"
+      "Bash(node -e \"import\\('@clerk/express'\\).then\\(m => console.log\\(Object.keys\\(m\\)\\)\\).catch\\(e => console.error\\(e.message\\)\\)\")",
+      "Bash(git ls-tree *)"
     ]
   }
 }
