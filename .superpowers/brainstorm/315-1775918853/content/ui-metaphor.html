@@ -1,0 +1,94 @@
+<h2>How does the user navigate connections?</h2>
+<p class="subtitle">When someone taps a news event, how do related stories surface around it?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="graph" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:20px;min-height:160px;display:flex;align-items:center;justify-content:center;position:relative;">
+      <!-- Graph nodes -->
+      <svg width="100%" height="140" viewBox="0 0 300 140">
+        <!-- edges -->
+        <line x1="150" y1="70" x2="80" y2="30" stroke="#6366f1" stroke-width="2"/>
+        <line x1="150" y1="70" x2="230" y2="30" stroke="#f59e0b" stroke-width="2"/>
+        <line x1="150" y1="70" x2="60" y2="110" stroke="#10b981" stroke-width="2"/>
+        <line x1="150" y1="70" x2="240" y2="110" stroke="#10b981" stroke-width="2"/>
+        <line x1="150" y1="70" x2="150" y2="115" stroke="#f43f5e" stroke-width="2"/>
+        <!-- center node -->
+        <circle cx="150" cy="70" r="22" fill="#6366f1" opacity="0.9"/>
+        <text x="150" y="74" text-anchor="middle" fill="white" font-size="9">Gas Prices↑</text>
+        <!-- cause nodes -->
+        <circle cx="80" cy="30" r="16" fill="#1e293b" stroke="#6366f1" stroke-width="1.5"/>
+        <text x="80" y="34" text-anchor="middle" fill="#94a3b8" font-size="8">OPEC cuts</text>
+        <circle cx="230" cy="30" r="16" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="230" y="34" text-anchor="middle" fill="#94a3b8" font-size="8">War supply</text>
+        <!-- effect nodes -->
+        <circle cx="60" cy="110" r="16" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+        <text x="60" y="114" text-anchor="middle" fill="#94a3b8" font-size="8">Flights cut</text>
+        <circle cx="240" cy="110" r="16" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+        <text x="240" y="114" text-anchor="middle" fill="#94a3b8" font-size="8">Food costs↑</text>
+        <circle cx="150" cy="118" r="16" fill="#1e293b" stroke="#f43f5e" stroke-width="1.5"/>
+        <text x="150" y="122" text-anchor="middle" fill="#94a3b8" font-size="8">Protests</text>
+      </svg>
+    </div>
+    <div class="card-body">
+      <h3>A — Interactive Knowledge Graph</h3>
+      <p>Events are nodes in a zoomable, pannable graph. Click any node to re-center on it. Color-coded edges show relationship type (cause, effect, context). Feels like exploring a live map.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="timeline" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:20px;min-height:160px;">
+      <div style="position:relative;padding-left:24px;border-left:2px solid #6366f1;margin:8px 0;">
+        <div style="margin-bottom:14px;">
+          <div style="font-size:10px;color:#6366f1;margin-bottom:2px;">CAUSE — Jan 12</div>
+          <div style="font-size:11px;color:#e2e8f0;background:#1e293b;padding:6px 10px;border-radius:6px;">OPEC announces output cuts</div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="font-size:10px;color:#f59e0b;margin-bottom:2px;">EVENT — Feb 3</div>
+          <div style="font-size:11px;color:#e2e8f0;background:#6366f1;padding:6px 10px;border-radius:6px;font-weight:bold;">⚡ Gas prices spike 18%</div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="font-size:10px;color:#10b981;margin-bottom:2px;">EFFECT — Feb 5</div>
+          <div style="font-size:11px;color:#e2e8f0;background:#1e293b;padding:6px 10px;border-radius:6px;">Airlines cancel 300 routes</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:#10b981;margin-bottom:2px;">EFFECT — Feb 9</div>
+          <div style="font-size:11px;color:#e2e8f0;background:#1e293b;padding:6px 10px;border-radius:6px;">Food delivery prices rise</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Vertical Timeline Chain</h3>
+      <p>A scrollable, chronological story. The selected event is the anchor; causes appear above it, effects below. Simple and linear — easy to follow but harder to show branching complexity.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:16px;min-height:160px;display:flex;gap:12px;">
+      <!-- left panel: article -->
+      <div style="flex:1;background:#1e293b;border-radius:8px;padding:10px;">
+        <div style="font-size:9px;color:#6366f1;margin-bottom:4px;">READING</div>
+        <div style="font-size:10px;color:#e2e8f0;font-weight:bold;margin-bottom:6px;">Gas Prices Spike 18% in February</div>
+        <div style="font-size:9px;color:#64748b;line-height:1.4;">Global fuel markets reacted sharply after OPEC announced...</div>
+        <div style="margin-top:10px;display:flex;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#6366f120;color:#818cf8;padding:2px 6px;border-radius:4px;">📎 3 causes</span>
+          <span style="font-size:8px;background:#10b98120;color:#34d399;padding:2px 6px;border-radius:4px;">⚡ 5 effects</span>
+          <span style="font-size:8px;background:#f59e0b20;color:#fbbf24;padding:2px 6px;border-radius:4px;">🔗 2 related</span>
+        </div>
+      </div>
+      <!-- right panel: connected -->
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:9px;color:#94a3b8;margin-bottom:2px;">CONNECTED STORIES</div>
+        <div style="background:#1e293b;border-left:3px solid #6366f1;border-radius:4px;padding:6px;font-size:9px;color:#cbd5e1;">OPEC cuts output by 2M barrels</div>
+        <div style="background:#1e293b;border-left:3px solid #10b981;border-radius:4px;padding:6px;font-size:9px;color:#cbd5e1;">Airlines cancel 300 routes globally</div>
+        <div style="background:#1e293b;border-left:3px solid #10b981;border-radius:4px;padding:6px;font-size:9px;color:#cbd5e1;">Food delivery prices up 12%</div>
+        <div style="background:#1e293b;border-left:3px solid #f59e0b;border-radius:4px;padding:6px;font-size:9px;color:#cbd5e1;">Consumer confidence drops</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Article + Connected Panel</h3>
+      <p>Users read a news article normally. A side/bottom panel shows connected stories grouped by type (causes, effects, related). Familiar reading experience with discovery baked in.</p>
+    </div>
+  </div>
+
+</div>

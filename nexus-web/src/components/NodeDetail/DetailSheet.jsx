@@ -33,7 +33,7 @@ export default function DetailSheet({ onLoadMore }) {
         className="flex items-start justify-between px-4 py-3 flex-shrink-0"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
       >
-        <h2 className="text-sm font-semibold text-slate-100 leading-tight pr-2 flex-1">
+        <h2 className="text-lg font-semibold text-slate-100 leading-tight pr-2 flex-1">
           {selectedNode.title}
         </h2>
 
@@ -80,7 +80,7 @@ export default function DetailSheet({ onLoadMore }) {
       {/* Summary + tags */}
       <div className="px-4 py-3 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         {selectedNode.summary && (
-          <p className="text-slate-400 text-xs leading-relaxed mb-2">{selectedNode.summary}</p>
+          <p className="text-slate-400 text-sm leading-relaxed mb-2">{selectedNode.summary}</p>
         )}
         <div className="flex flex-wrap gap-1">
           {selectedNode.tags?.map((tag) => (
